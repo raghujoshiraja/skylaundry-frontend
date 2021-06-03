@@ -1,19 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import DataProvider from "./GlobalState";
 import MainPages from "./MainPages";
 import { ToastProvider } from "react-toast-notifications";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 const App = () => {
-
   return (
-    <DataProvider>
-      <ToastProvider>
+    <ToastProvider>
+      <DataProvider>
         <MainPages />
-      </ToastProvider>
-    </DataProvider>
+      </DataProvider>
+    </ToastProvider>
   );
 };
 

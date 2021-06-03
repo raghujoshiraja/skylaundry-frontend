@@ -30,6 +30,7 @@ export default function DataProvider({children}) {
 
   const state = {
     userAPI: userAPI(token),
+    refresh
   }
 
   return (

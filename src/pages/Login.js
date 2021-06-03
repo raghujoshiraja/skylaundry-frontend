@@ -1,10 +1,8 @@
-import React, { useContext, useState } from "react";
-import { GlobalState } from "../GlobalState";
+import React, { useState } from "react";
 import axios from '../axios'
 import { useToasts } from 'react-toast-notifications'
 
 const Login = ({register}) => {
-  const state = useContext(GlobalState);
   const [data, setData] = useState({ email: "", password: "" });
   const { addToast } = useToasts()
 

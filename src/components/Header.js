@@ -28,6 +28,9 @@ const Header = () => {
     await axios.get("/users/logout");
 
     localStorage.removeItem("previousLogin");
+    setIsLoggedIn(false);
+    setIsDriver(false);
+    setIsAdmin(false);
 
     window.location.href = "/";
   };
