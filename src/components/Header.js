@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { GlobalState } from "../GlobalState";
 import Logo from "../images/logo.svg";
 import Menu from "../images/menu.svg";
 import axios from "../axios";
+import LogoutIcon from '../images/logout.svg'
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    await axios.get("/users/logout");
+    await axios.get("/users/logout", { withCredentials: true });
 
     localStorage.removeItem("previousLogin");
     setIsLoggedIn(false);
@@ -34,36 +35,31 @@ const Header = () => {
 
     window.location.href = "/";
   };
-  const CommonRouter = () => {
-    return (
-      <>
-        <Link to="/">Home</Link>
-      </>
-    );
-  };
-  const AdminRouter = () => {
-    return (
-      <>
-        <Link to="/">Categories</Link>
-        <Link to="/">Manage Orders</Link>
-      </>
-    );
-  };
-  const DriverRouter = () => {
-    return (
-      <>
-        <Link to="/">My Assignments</Link>
-      </>
-    );
-  };
-  const CustomerRouter = () => {
-    return (
-      <>
-        <Link to="/order">Order</Link>
-        <Link to="/">My Orders</Link>
-      </>
-    );
-  };
+  const CommonRouter = () => (
+    <>
+      <NavLink exact activeClass="navigated" to="/">Home</NavLink>
+    </>
+  );
+
+  const AdminRouter = () => (
+    <>
+      <NavLink exact activeClass="navigated" to="/categories">Categories</NavLink>
+      <NavLink exact activeClass="navigated" to="/orders">Manage Orders</NavLink>
+    </>
+  );
+
+  const DriverRouter = () => (
+    <>
+      <NavLink exact activeClass="navigated" to="/orders">My Assignments</NavLink>
+    </>
+  );
+
+  const CustomerRouter = () => (
+    <>
+      <NavLink exact activeClass="navigated" to="/orders">My Orders</NavLink>
+      <NavLink exact activeClass="navigated" to="/new" className="rounded-full px-6 py-2 hover:opacity-70 transition ease-in-out border-2 border-black not-nav-link" >New Order</NavLink>
+    </>
+  );
 
   return (
     <header className="navbar h-24 flex flex-row items-center justify-between text-lg font-semibold relative">
@@ -88,7 +84,11 @@ const Header = () => {
         {isDriver && <DriverRouter />}
         {isAdmin && <AdminRouter />}
         {!(isAdmin || isDriver) && <CustomerRouter />}
-        {isLoggedIn && <Link onClick={handleLogout} to="/">Logout</Link>}
+        {isLoggedIn && (
+          <Link onClick={handleLogout} to="/">
+            <img className="inline-block h-full mb-1 text-black" src={LogoutIcon} alt="Logout" width="25" title="Logout" />
+          </Link>
+        )}
       </nav>
     </header>
   );

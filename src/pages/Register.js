@@ -4,15 +4,14 @@ import { useToasts } from "react-toast-notifications";
 
 const Register = ({ login }) => {
   const { addToast } = useToasts();
-  const [data, setData] = useState({});
+  const [data, setData] = useState({name: "", email: "", password: "",});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log("/users/signup", "data", data)
       await axios
-        .post("/users/signup", data)
+        .post("/users/signup", data, { withCredentials: true })
         .then((res) => {
           localStorage.setItem("previousLogin", true);
 
@@ -41,7 +40,7 @@ const Register = ({ login }) => {
 
   return (
     <div className="center">
-      <form className="form" onSubmit={handleSubmit}>
+      <form className="form max-w-md" onSubmit={handleSubmit}>
         <h1 className="h1">Sign up</h1>
         <input
           type="text"

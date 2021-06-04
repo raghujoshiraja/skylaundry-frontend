@@ -14,8 +14,7 @@ const Login = ({register}) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      console.log("State", {...data})
-      await axios.post(("/users/login"), { ...data });
+      await axios.post("/users/login", { ...data }, { withCredentials: true});
 
       localStorage.setItem("previousLogin", true);
 
@@ -32,7 +31,7 @@ const Login = ({register}) => {
 
   return (
     <div className="center">
-      <form className="form" onSubmit={handleSubmit}>
+      <form className="form max-w-md" onSubmit={handleSubmit}>
         <h1 className="h1">Login</h1>
         <input
           type="text"

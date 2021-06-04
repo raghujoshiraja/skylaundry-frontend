@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AddCategory = () => {
+const Profile = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const AddCategory = () => {
   )
 }
 
-export default AddCategory
+export default Profile

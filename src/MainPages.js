@@ -15,10 +15,11 @@ import { useToasts } from "react-toast-notifications";
 
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
-import Order from "./pages/Order";
+import New from "./pages/New";
+import Orders from "./pages/Orders";
 
 // Admin
-import Categories from  './pages/AddCategory'
+import Categories from  './pages/Categories'
 
 // Utils
 import NotFound from './components/utils/NotFound'
@@ -27,7 +28,6 @@ import NotFound from './components/utils/NotFound'
 const MainPages = () => {
   const state = useContext(GlobalState);
   const { addToast } = useToasts();
-  console.log(state);
   const [isLoggedIn] = state.userAPI.isLoggedIn;
   const [isAdmin] = state.userAPI.isAdmin;
   // const [isDriver] = state.userAPI.isDriver;
@@ -35,7 +35,6 @@ const MainPages = () => {
   useEffect(() => {
     const ping = () => {
       axios.get("/ping").catch((err) => {
-        console.log("hello");
         addToast(
           "Unable to connect to the server at the moment. Contact developer for assistance or try again later.",
           {
@@ -59,10 +58,13 @@ const MainPages = () => {
               <Switch>
                 {/* Common paths */}
                 <Route path="/" exact component={Home} />
-                <Route path="/order" exact component={Order} />
+                <Route path="/new" exact component={New} />
+                <Route path="/orders" exact component={Orders} />
 
                 {/* Admin paths */}
                 <Route to="/categories" component={isAdmin ? Categories : NotFound} />
+                
+                {/* Miscellaneous Paths */}
                 <Redirect from="*" to="/" />
               </Switch>
             </main>

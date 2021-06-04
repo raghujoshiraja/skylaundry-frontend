@@ -4,6 +4,5 @@ import axios from 'axios';
 const instance = axios.create({
 // .. where we make our configurations
     baseURL: process.env.BACKEND_API_ENDPOINT || (process.env.NODE_ENV === "development" ? "http://localhost:4040/" : "https://skylaundryp7.herokuapp.com/"),
-    withCredentials: true
 });
 export default instance;
