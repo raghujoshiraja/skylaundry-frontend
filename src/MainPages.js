@@ -17,6 +17,7 @@ import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import New from "./pages/New";
 import Orders from "./pages/Orders";
+import Order from "./pages/Order";
 
 // Admin
 import Categories from  './pages/Categories'
@@ -60,6 +61,7 @@ const MainPages = () => {
                 <Route path="/" exact component={Home} />
                 <Route path="/new" exact component={New} />
                 <Route path="/orders" exact component={Orders} />
+                <Route path="/order/:id" exact component={Order} />
 
                 {/* Admin paths */}
                 <Route to="/categories" component={isAdmin ? Categories : NotFound} />

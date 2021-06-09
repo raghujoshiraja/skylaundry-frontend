@@ -30,9 +30,32 @@ const OrderAPI = (token) => {
         );
       }
     };
-
+    
     fetchOrders()
   }, [token, refreshOrdersVar, addToast]);
+  
+  const fetchOrder = async (id) => {
+    try { 
+      const fetchedOrder = await axios.get(`/orders/${id}`, {
+        headers: { Authorization: token },
+        withCredentials: true,
+      });
+      console.log(fetchedOrder)
+
+      return (fetchedOrder.data);
+    } catch (err) {
+      addToast(
+        `Error ${
+          err.response !== undefined
+            ? err.response.status + ": " + err.response.data.message ||
+              err.response.statusText
+            : err
+        }}`,
+        { appearance: "error" }
+      );
+      return {}
+    }
+  };
 
   const createOrder = (order) => {
     // Param <Order>: Array of orders
@@ -64,6 +87,7 @@ const OrderAPI = (token) => {
     orders: [orders, setOrders],
     createOrder,
     refreshOrders,
+    fetchOrder
   };
 };
 

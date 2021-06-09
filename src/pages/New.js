@@ -16,7 +16,7 @@ const New = () => {
   const [lastChanged, setLastChanged] = useState("");
 
   const addField = (e) => {
-    e && e.preventDefault()
+    e && e.preventDefault();
     if (
       cart.slice(-1)[0].categoryId !== "" ||
       cart.slice(-1)[0].weight !== undefined
@@ -27,7 +27,7 @@ const New = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (createOrder(cart)) setCart(initialState)
+    if (createOrder(cart)) setCart(initialState);
   };
 
   const handleDelete = (id) => {
@@ -36,7 +36,7 @@ const New = () => {
   };
 
   const handleChange = (id, change) => {
-    setLastChanged(id)
+    setLastChanged(id);
     setCart(
       cart.map((item) => {
         if (item.id === id) return { ...item, ...change };
@@ -50,7 +50,7 @@ const New = () => {
     const availableCategories = categories.filter(
       (item) => !selectedCategories.includes(item._id)
     );
-    console.log("Available", availableCategories)
+    console.log("Available", availableCategories);
 
     return (
       <>
@@ -64,16 +64,11 @@ const New = () => {
                 }}
                 required
               >
-                <option
-                  value=""
-                  className="text-gray-500 opacity-40"
-                  disabled
-                  hidden
-                >
+                <option value="" disabled hidden>
                   Select Category
                 </option>
                 {categories.map(({ _id: catId, name }) => (
-                  <option key={catId} value={catId}>
+                  <option key={catId} value={catId} disabled={!!availableCategories.includes(catId)}>
                     {name}
                   </option>
                 ))}

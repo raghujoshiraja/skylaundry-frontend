@@ -14,10 +14,10 @@ const Auth = () => {
         <img
           src={Logo}
           alt="SkyLaundry"
-          className=""
+          className="flex-grow"
         />
       </div>
-      <div className="flex-grow grid place-items-center">
+      <div className="flex-grow flex justify-center align-center">
         {screen === "LOGIN" ? (
           <Login register={() => setScreen("REGISTER")} />
         ) : (

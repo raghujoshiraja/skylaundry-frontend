@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,400;1,800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,400;1,800&display=swap");
 
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
-.h1{
+.h1 {
   @apply font-semibold text-3xl;
 }
-nav > *{
+nav > * {
   @apply font-normal px-4 py-4 hover:text-black;
 }
 nav .active {
@@ -29,18 +29,18 @@ nav > *::before {
   margin-top: 26rem;
 }
 
-.form{
+.form {
   @apply grid place-items-center text-center gap-4 border-black border-2 rounded-3xl px-12 py-8 w-screen;
 }
-.input{
-  @apply border-black border-2 flex align-middle justify-between px-6 py-3 rounded-full;
+.input {
+  @apply border-black border-2 flex align-middle justify-between px-6 py-3 rounded-full w-full;
 }
-.btn{
+.btn {
   @apply text-white bg-black rounded-full px-6 py-3 self-center hover:opacity-70 transition ease-in-out;
 }
-.center{
-  @apply grid place-items-center ;
+.center {
+  @apply flex items-center justify-center;
 }
-.label{
+.label {
   @apply ml-4;
 }
