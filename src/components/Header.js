@@ -45,6 +45,7 @@ const Header = () => {
     <>
       <NavLink exact activeClass="navigated" to="/categories">Categories</NavLink>
       <NavLink exact activeClass="navigated" to="/orders">Manage Orders</NavLink>
+      <NavLink exact activeClass="navigated" to="/billing">Billing</NavLink>
     </>
   );
 

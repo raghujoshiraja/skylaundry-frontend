@@ -36,11 +36,29 @@ nav > *::before {
   @apply border-black border-2 flex align-middle justify-between px-6 py-3 rounded-full w-full;
 }
 .btn {
-  @apply text-white bg-black rounded-full px-6 py-3 self-center hover:opacity-70 transition ease-in-out;
+  @apply text-white bg-black rounded-full px-6 py-3 self-center hover:opacity-70 transition ease-in-out inline-block;
 }
 .center {
-  @apply flex items-center justify-center;
+  @apply flex items-center justify-center flex-col;
 }
 .label {
   @apply ml-4;
+}
+.nested-link-container {
+  position:relative;
+}
+
+.nested-link-container .overlay {
+  position:absolute;
+  left:0; top:0; bottom:0; right:0;
+}
+
+.nested-link-container .inner {
+  position:relative;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.nested-link-container .inner a {
+  pointer-events: all;
 }

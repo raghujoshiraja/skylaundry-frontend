@@ -50,7 +50,6 @@ const New = () => {
     const availableCategories = categories.filter(
       (item) => !selectedCategories.includes(item._id)
     );
-    console.log("Available", availableCategories);
 
     return (
       <>

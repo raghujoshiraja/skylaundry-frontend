@@ -1,24 +1,24 @@
 import React, { useContext } from "react";
+import OrdersList from "../components/OrdersList";
 import { GlobalState } from "../GlobalState";
-import { Link } from 'react-router-dom'
-import moment from 'moment';
 
-const Orders = ({ small }) => {
+const Orders = () => {
   const state = useContext(GlobalState);
-  const [orders] = state.orderAPI.orders;
+  const isNormalUser = !(state.userAPI.isAdmin[0] || state.userAPI.isDriver[0]);
 
   return (
-    <div>
-      <h1 className="h1">Order History</h1>
-      <div className="listItem">
-        {(small? orders.slice(4) : orders).map((order) => (
-          <div className="my-2 border-black border-2 rounded-3xl px-4 py-2">
-            <h4>Ordered {order.order.length} Items</h4>
-            <h4>On {moment(order.createdAt).format('YYYY/MM/DD')} Items</h4>
-            <Link to={`/order/${order._id}`} className="underline font-bold">View Order &gt;</Link>
-          </div>
-        ))}
-      </div>
+    <div className="w-full">
+      {!isNormalUser && (
+        <OrdersList orders={state.orderAPI.orders[0]} embedded={false}>
+          <h1 className="h1">Assign Drivers</h1>
+        </OrdersList>
+      )}
+      <OrdersList
+        orders={state.orderAPI.orders[0].filter((order) => order.status === 0)}
+        embedded={false}
+      >
+        <h1 className="h1">All Previous Orders</h1>
+      </OrdersList>
     </div>
   );
 };

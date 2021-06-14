@@ -2,6 +2,20 @@ import { useState, useEffect } from "react";
 import axios from "../axios";
 import { useToasts } from "react-toast-notifications";
 
+
+const statusCodeMeaning = {
+  0: ["Ordered", "Waiting for alloting driver","text-yellow-600",  "text-yellow-500"],
+  1: ["Driver allotted", "Ready for pick up","text-yellow-700",  "text-yellow-600"],
+  2: ["Picked Up", "ready to wash","text-yellow-800",  "text-yellow-700"],
+  3: ["In wash cycle", "To be prepared for Delivery","text-yellow-900",  "text-yellow-800"],
+  4: ["Washed", "Ready to be deliverd","text-green-500",  "text-yellow-900"],
+  5: ["Delivery Driver Allotted", "Waiting for departure","text-green-600",  "text-yellow-500"],
+  6: ["Delivered by delivery Driver", "Payment pending","text-green-700",  "text-yellow-500"],
+  7: ["Payment pending", "Waiting for Payment","text-green-800",  "text-yellow-500"],
+  8: ["Payment Done", "Order Complete","text-green-900",  "text-green-500"],
+};
+
+
 const OrderAPI = (token) => {
   const { addToast } = useToasts();
   const [orders, setOrders] = useState([]);
@@ -40,7 +54,6 @@ const OrderAPI = (token) => {
         headers: { Authorization: token },
         withCredentials: true,
       });
-      console.log(fetchedOrder)
 
       return (fetchedOrder.data);
     } catch (err) {
@@ -87,7 +100,8 @@ const OrderAPI = (token) => {
     orders: [orders, setOrders],
     createOrder,
     refreshOrders,
-    fetchOrder
+    fetchOrder,
+    statusCodeMeaning
   };
 };
 

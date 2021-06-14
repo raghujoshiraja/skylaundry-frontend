@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
+  // Redirect,
 } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -18,12 +18,14 @@ import Home from "./pages/Home";
 import New from "./pages/New";
 import Orders from "./pages/Orders";
 import Order from "./pages/Order";
+import Profile from "./pages/Profile";
 
 // Admin
-import Categories from  './pages/Categories'
+import Billing from "./pages/Billing";
+import Categories from "./pages/Categories";
 
 // Utils
-import NotFound from './components/utils/NotFound'
+import NotFound from "./components/utils/NotFound";
 // import Loading from './components/utils/Loading'
 
 const MainPages = () => {
@@ -63,11 +65,22 @@ const MainPages = () => {
                 <Route path="/orders" exact component={Orders} />
                 <Route path="/order/:id" exact component={Order} />
 
+                <Route path="/user/:id" exact component={Profile} />
+
                 {/* Admin paths */}
-                <Route to="/categories" component={isAdmin ? Categories : NotFound} />
-                
+                <Route
+                  path="/billing"
+                  exact
+                  component={isAdmin ? Billing : NotFound}
+                />
+                <Route
+                  path="/categories"
+                  exact
+                  component={isAdmin ? Categories : NotFound}
+                />
+
                 {/* Miscellaneous Paths */}
-                <Redirect from="*" to="/" />
+                <Route path="/" component={NotFound} />
               </Switch>
             </main>
             <Footer />
