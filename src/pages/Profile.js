@@ -33,7 +33,8 @@ const Profile = () => {
         <>
           <hr className="bg-black my-4" color="#000000" />
           <h1 className="h1">
-            {isAdmin ? "All" : "Mutual"} orders({orders && orders.length})
+            {isAdmin ? "All" : "Mutual"} orders (
+            {orders && orders.filter((order) => order.clientId === id).length})
           </h1>
           <OrdersList
             orders={orders.filter((order) => order.clientId === id)}

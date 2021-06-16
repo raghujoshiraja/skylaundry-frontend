@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
 import { GlobalState } from "../GlobalState";
 import { Link } from "react-router-dom";
-// import { useToasts } from "react-toast-notifications";
+import { useToasts } from "react-toast-notifications";
 import moment from "moment";
 // import _ from "lodash";
-// import Modal from "../components/Modal";
-// import axios from "../axios";
+import Modal from "react-modal";
+import axios from "../axios";
 
 const OrdersList = (
   { small, orders, children },
@@ -14,78 +14,119 @@ const OrdersList = (
   embedded = true
 ) => {
   const state = useContext(GlobalState);
-  // const { addToast } = useToasts();
-  const setModalIsOpen = useState(false)[0];
+  const { addToast } = useToasts();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [categories] = state.categoriesAPI.categories;
-  const { statusCodeMeaning } = state.orderAPI;
-  const setAddDriverOrderId = useState("")[0];
-  // const [addDriverId, setAddDriverId] = useState("");
+  const { statusCodeMeaning, refreshOrders } = state.orderAPI;
+  const [addDriverOrderId, setAddDriverOrderId] = useState("");
+  const [addDriverId, setAddDriverId] = useState("");
   const isNormalUser =
     !state.userAPI.isAdmin[0] &&
     !state.userAPI.isDriver[0] &&
     state.userAPI.isLoggedIn[0];
   const [isAdmin] = state.userAPI.isAdmin;
-  // const [driversList] = state.userAPI.driversList;
-  // const { token } = state;
+  const [driversList] = state.userAPI.driversList;
+  const { token } = state;
+
+  const ModalContainer = () => (
+    <Modal
+      isOpen={modalIsOpen}
+      onAfterOpen={() => setModalIsOpen(true)}
+      onRequestClose={() => setModalIsOpen(false)}
+      contentLabel="Example Modal"
+      style={{
+        overlay: {
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        },
+        content: {
+          maxWidth: "400px",
+          width: "100%",
+          maxHeight: "400px",
+          height: "100%",
+          left: "50%",
+          top: "50%",
+          transform: `translate(-50%, -50%)`,
+          borderRadius: 20,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          textAlign: "center",
+          position: "relative",
+          overflow: "scroll",
+          padding: 10,
+        },
+      }}
+    >
+      <h1 className="h1">Add Driver</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleAddDriver();
+        }}
+        className="w-full px-10 pb-10 text-center"
+      >
+        <div className="text-left my-3">
+          <label htmlFor="driver">Driver Name</label>
+          <select
+            value={addDriverId}
+            onChange={(e) => {
+              setAddDriverId(e.target.value);
+            }}
+            required
+            className="input"
+          >
+            <option value="" disabled hidden>
+              Select Driver
+            </option>
+            {driversList.map((driver) => (
+              <option key={driver._id} value={driver._id}>
+                {driver.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="btn mt-8"
+          onClick={() => handleAddDriver(addDriverOrderId)}
+        >
+          Add Driver
+        </button>
+      </form>
+    </Modal>
+  );
 
   console.log(orders);
 
   if (!orders || orders.length < 1) return null;
 
-  // const handleAddDriver = (addDriverOrderId) => {
-  //   axios
-  //     .put(
-  //       `/orders/add_driver/${addDriverOrderId}`,
-  //       { driverId: addDriverId },
-  //       { headers: { Authorization: token }, withCredentials: true }
-  //     )
-  //     .then(addToast("Driver Added Successfully"))
-  //     .catch((err) =>
-  //       addToast(
-  //         err && err.response && err.response.data && err.response.data.message,
-  //         { appearance: "error" }
-  //       )
-  //     );
-  // };
-
-  // const ModalContainer = () => (
-  //   <Modal>
-  //     <h1 className="h1">Add Driver</h1>
-  //     <form
-  //       onSubmit={(e) => {
-  //         handleAddDriver();
-  //       }}
-  //       className="w-full px-10 pb-10 text-center"
-  //     >
-  //       {/* <div className="text-left my-3">
-  //         <label htmlFor="driver">Driver Name</label>
-  //         <select
-  //           value={addDriverId}
-  //           onChange={(e) => {
-  //             setAddDriverId(e.target.value);
-  //           }}
-  //           required
-  //           className="input"
-  //         >
-  //           <option value="" disabled hidden>
-  //             Select Driver
-  //           </option>
-  //           {driversList.map((driver) => (
-  //             <option key={driver._id} value={driver._id}>
-  //               {driver.name}
-  //             </option>
-  //           ))}
-  //         </select>
-  //       </div> */}
-  //       {/* <button
-  //         className="btn mt-8"
-  //         onClick={() => handleAddDriver(addDriverOrderId)}
-  //       >
-  //         Add Driver
-  //       </button> */}
-  //     </form>
-  //   </Modal>
-  // );
+  const handleAddDriver = () => {
+    axios
+      .put(
+        `/orders/change_status/${addDriverOrderId}/1`,
+        { driverId: addDriverId },
+        { headers: { Authorization: token }, withCredentials: true }
+      )
+      .then((res) => {
+        if (res && res.data) {
+          addToast("Driver Added Successfully", { appearance: "success" });
+          setModalIsOpen(false);
+          setAddDriverOrderId("");
+          refreshOrders();
+        }
+      })
+      .catch((err) =>
+        addToast(
+          err && err.response && err.response.data && err.response.data.message,
+          { appearance: "error" }
+        )
+      );
+  };
 
   return (
     <div
@@ -93,7 +134,7 @@ const OrdersList = (
         !embedded ? "max-w-2xl" : ""
       } nested-link-container`}
     >
-      {/* <ModalContainer /> */}
+      <ModalContainer />
       {/* Parent */}
       {children}
       <div className="listItem w-full">

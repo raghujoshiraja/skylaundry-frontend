@@ -80,13 +80,16 @@ const UserAPI = (token) => {
     }
   };
 
+  const addDriver = async () => {};
+
   return {
     isLoggedIn: [isLoggedIn, setIsLoggedIn],
     isAdmin: [isAdmin, setIsAdmin],
     isDriver: [isDriver, setIsDriver],
+    addDriver: addDriver,
     userDetails,
     getUserDetailsById,
-    driversList: [driversList, setDriversList]
+    driversList: [driversList, setDriversList],
   };
 };
 
