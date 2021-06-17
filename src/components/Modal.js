@@ -1,7 +1,7 @@
-import React from 'react'
-import Modal from 'react-modal'
+import React from "react";
+import Modal from "react-modal";
 
-const ModalComponent = ({setModalIsOpen, modalIsOpen, children}) => {
+const ModalComponent = ({ setModalIsOpen, modalIsOpen, children }) => {
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -39,7 +39,7 @@ const ModalComponent = ({setModalIsOpen, modalIsOpen, children}) => {
     >
       {children}
     </Modal>
-  )
-}
+  );
+};
 
-export default ModalComponent
+export default ModalComponent;
