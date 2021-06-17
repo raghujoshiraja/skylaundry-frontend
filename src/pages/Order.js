@@ -12,7 +12,7 @@ const Order = ({ children }) => {
   const state = useContext(GlobalState);
   const [orderDetails, setOrderDetails] = useState({});
   const [customerDetails, setCustomerDetails] = useState({});
-  // const { statusCodeMeaning } = state.orderAPI;
+  const { statusCodeMeaning } = state.orderAPI;
   const [categories] = state.categoriesAPI.categories;
   const { id } = useParams();
   const fetchOrder = state.orderAPI.fetchOrder;
@@ -64,7 +64,7 @@ const Order = ({ children }) => {
                 US $ {category.price * item.weight}
               </p>
               <p className="font-bold text-gray-600">
-                US $ {category.price} per KG
+                US$ {category.price}/kg Currently
               </p>
             </p>
           </div>
@@ -78,16 +78,42 @@ const Order = ({ children }) => {
         <div className="">
           <h1 className="h1">Order Details</h1>
           <h1 className="font-semibold text-lg">
-            By <Link to={`/user/${customerDetails._id}`} className="underline">{_.startCase(_.toLower(customerDetails.name))}</Link>
+            By{" "}
+            <Link to={`/user/${customerDetails._id}`} className="underline">
+              {_.startCase(_.toLower(customerDetails.name))}
+            </Link>
           </h1>
-          
+          <p
+            className={`font-bold text-xl ${
+              statusCodeMeaning[orderDetails.status][2]
+            }`}
+          >
+            {statusCodeMeaning[orderDetails.status][0]}
+          </p>
+          <p
+            className={`uppercase tracking-widest ${
+              statusCodeMeaning[orderDetails.status][3]
+            } text-yellow-400`}
+          >
+            {/* Upcoming Status */}
+            {statusCodeMeaning[orderDetails.status][1]}
+          </p>
         </div>
         <hr />
         <div className="listItem w-full my-5">
           <ItemList />
         </div>
         <hr />
-        <p className="text-right">Total Cost: {orderDetails.price}</p>
+        <p className="text-right font-semibold">
+          {orderDetails && orderDetails.total
+            ? `Total Cost: US$ ${orderDetails.total}`
+            : `Calculated Total: US$ ${
+                orderDetails.order &&
+                orderDetails.order
+                  .map((order) => order.price * order.weight)
+                  .reduce((a, b) => a + b, 0)
+              }`}
+        </p>
       </div>
     </>
   );

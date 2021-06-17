@@ -24,9 +24,9 @@ const Profile = () => {
   return (
     <div className="w-full max-w-2xl">
       <div className="">
-        <h1 className="h1">Name {_.startCase(_.toLower(userDetails.name))}</h1>
+        <h1 className="h1">Name: {_.startCase(_.toLower(userDetails.name))}</h1>
         <h4 className="gray-600">
-          Joined on {moment(userDetails.createdAt).format("DD-MM-YYYY")}
+          Joined on {moment(userDetails.createdAt).format("DD-MM-YYYY [at] hh:mm:ss a")}
         </h4>
       </div>
       {(isAdmin || isDriver) && (
@@ -37,6 +37,8 @@ const Profile = () => {
             {orders && orders.filter((order) => order.clientId === id).length})
           </h1>
           <OrdersList
+            isCollapsed={true}
+            dontShowLabels
             orders={orders.filter((order) => order.clientId === id)}
           />
         </>
