@@ -1,6 +1,7 @@
 import React from 'react'
+import Modal from 'react-modal'
 
-const Modal = ({setModalIsOpen, modalIsOpen, children}) => {
+const ModalComponent = ({setModalIsOpen, modalIsOpen, children}) => {
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -41,4 +42,4 @@ const Modal = ({setModalIsOpen, modalIsOpen, children}) => {
   )
 }
 
-export default Modal
+export default ModalComponent
