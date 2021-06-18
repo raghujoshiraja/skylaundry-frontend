@@ -1,12 +1,19 @@
 import React from "react";
 import Modal from "react-modal";
 
-const ModalComponent = ({ setModalIsOpen, modalIsOpen, children }) => {
+const ModalComponent = ({
+  setIsModalOpen,
+  isModalOpen,
+  children,
+  onRequestClose,
+}) => {
   return (
     <Modal
-      isOpen={modalIsOpen}
-      onAfterOpen={() => setModalIsOpen(true)}
-      onRequestClose={() => setModalIsOpen(false)}
+      isOpen={isModalOpen}
+      onAfterOpen={() => setIsModalOpen(true)}
+      onRequestClose={
+        !onRequestClose ? () => setIsModalOpen(false) : () => onRequestClose()
+      }
       contentLabel="Example Modal"
       style={{
         overlay: {

@@ -1,20 +1,29 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { GlobalState } from "../GlobalState";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
+import ModalContainer from "./Modal";
 import moment from "moment";
+import NotFound from "./utils/NotFound";
+import { FiFilter } from "react-icons/fi";
 // import _ from "lodash";
-import Modal from "react-modal";
 import axios from "../axios";
 
 const OrdersList = (
-  { small, orders, children, isCollapsed, dontShowLabels },
+  {
+    small,
+    orders: sourceOrders,
+    initialFilter,
+    children,
+    isCollapsed,
+    dontShowLabels,
+  },
   showButtons = true,
   embedded = true
 ) => {
   const state = useContext(GlobalState);
   const { addToast } = useToasts();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories] = state.categoriesAPI.categories;
   const { statusCodeMeaning, refreshOrders } = state.orderAPI;
   const [addDriverOrderId, setAddDriverOrderId] = useState("");
@@ -24,8 +33,28 @@ const OrdersList = (
     !state.userAPI.isDriver[0] &&
     state.userAPI.isLoggedIn[0];
   const [isAdmin] = state.userAPI.isAdmin;
-  const [driversList] = state.userAPI.driversList;
+  const usersList = state.userAPI.usersList[0]
+    ? state.userAPI.usersList[0]
+    : [];
+  const driversList = state.userAPI.usersList[0]
+    ? state.userAPI.usersList[0].filter((user) => user.role === 1)
+    : [];
   const { token } = state;
+  const [currentFilter, setCurrentFilter] = useState(initialFilter || "");
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    // For Filtering orders
+    setOrders(
+      currentFilter
+        ? sourceOrders.filter(
+            (order) => Number(order.status) === Number(currentFilter)
+          )
+        : sourceOrders
+    );
+  }, [sourceOrders, currentFilter, setOrders]);
+
+  const isEmptyResponse = !orders || orders.length < 1;
 
   const ModalContent = () => (
     <>
@@ -67,47 +96,6 @@ const OrdersList = (
     </>
   );
 
-  const ModalContainer = () => (
-    <Modal
-      isOpen={modalIsOpen}
-      onAfterOpen={() => setModalIsOpen(true)}
-      onRequestClose={() => setModalIsOpen(false)}
-      contentLabel="Example Modal"
-      style={{
-        overlay: {
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        },
-        content: {
-          maxWidth: "400px",
-          width: "100%",
-          maxHeight: "400px",
-          height: "100%",
-          left: "50%",
-          top: "50%",
-          transform: `translate(-50%, -50%)`,
-          borderRadius: 20,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          textAlign: "center",
-          position: "relative",
-          overflow: "scroll",
-          padding: 10,
-        },
-      }}
-    >
-      <ModalContent />
-    </Modal>
-  );
-
-  if (!orders || orders.length < 1) return null;
-
   const handleAddDriver = () => {
     axios
       .put(
@@ -118,7 +106,7 @@ const OrdersList = (
       .then((res) => {
         if (res && res.data) {
           addToast("Driver Added Successfully", { appearance: "success" });
-          setModalIsOpen(false);
+          setIsModalOpen(false);
           setAddDriverOrderId("");
           refreshOrders();
         }
@@ -137,7 +125,7 @@ const OrdersList = (
       {order.status <= 0 && (
         <Link
           onClick={() => {
-            setModalIsOpen(true);
+            setIsModalOpen(true);
             setAddDriverOrderId(order._id);
           }}
           class="btn mx-2"
@@ -152,7 +140,7 @@ const OrdersList = (
   );
 
   const OrderList = () =>
-    (!isCollapsed ? orders.slice(1, 9) : orders).map((order, idx) => {
+    orders.map((order, idx) => {
       return (
         <>
           {/* List Item */}
@@ -168,7 +156,10 @@ const OrdersList = (
                 {/* Id and Current Status */}
                 {!isNormalUser && !dontShowLabels && (
                   <Link to={`/user/${order.clientId}`}>
-                    By <span className="underline">{order.clientId}</span>
+                    By{" "}
+                    <span className="underline">
+                      {usersList.filter((user) => user._id === order.clientId)[0].name}
+                    </span>
                   </Link>
                 )}
                 <p
@@ -199,19 +190,28 @@ const OrdersList = (
             </p>
             <div className="flex flex-row items-end justify-between flex-grow">
               {/* First 3 items */}
-              <h3 className="">
-                {order.order
-                  .slice(0, 3)
-                  .map(
-                    (product) =>
-                      categories
-                        .filter(
-                          (category) => category._id === product.categoryId
-                        )
-                        .map((cat) => cat.name)[0]
-                  )
-                  .join(", ") + (order.order.length >= 3 ? ", etc." : "")}
-              </h3>
+              <div className="">
+                <h3 className="">
+                  {order.order
+                    .slice(0, 3)
+                    .map(
+                      (product) =>
+                        categories
+                          .filter(
+                            (category) => category._id === product.categoryId
+                          )
+                          .map((cat) => cat.name)[0]
+                    )
+                    .join(", ") + (order.order.length >= 3 ? ", etc." : "")}
+                </h3>
+                <h3
+                  className={`font-semibold ${
+                    order.paymentDone ? "text-green-500" : "text-yellow-500"
+                  }`}
+                >
+                  US ${order.total} {order.paymentDone ? "Done" : "Pending"}
+                </h3>
+              </div>
               {/* Total Items Count */}
               {isAdmin && isCollapsed && <AdminControls order={order} />}
             </div>
@@ -226,8 +226,26 @@ const OrdersList = (
         !embedded ? "max-w-2xl" : ""
       } nested-link-container`}
     >
-      <ModalContainer />
+      <ModalContainer isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        <ModalContent />
+      </ModalContainer>
       {/* Parent */}
+      <div className="flex align-center justify-end">
+        <div className="rounded-2xl p-2 border-2 border-solid flex align-center justify-center">
+          <FiFilter className="mx-2 mt-1" />
+          <select
+            default={"-1"}
+            className=""
+            value={currentFilter}
+            onChange={(e) => setCurrentFilter(e.target.value)}
+          >
+            <option value="">All orders</option>
+            {Object.values(statusCodeMeaning).map((code, idx) => (
+              <option value={idx}>{code[0]}</option>
+            ))}
+          </select>
+        </div>
+      </div>
       {children}
       <div
         className={`listItem w-full ${
@@ -235,7 +253,15 @@ const OrdersList = (
         }`}
       >
         {/* List item parent */}
-        <OrderList />
+        {isEmptyResponse ? (
+          <div className="grid place-items-center">
+            <NotFound />
+          </div>
+        ) : (
+          <>
+            <OrderList />
+          </>
+        )}
       </div>
     </div>
   );

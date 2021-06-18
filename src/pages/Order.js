@@ -17,7 +17,7 @@ const Order = ({ children }) => {
   const { id } = useParams();
   const fetchOrder = state.orderAPI.fetchOrder;
   // const { addToast } = useToasts();
-  // const [modalIsOpen, setModalIsOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   // const [addDriverOrderId, setAddDriverOrderId] = useState("");
   // const [addDriverId, setAddDriverId] = useState("");
   // const isNormalUser =
@@ -98,6 +98,13 @@ const Order = ({ children }) => {
             {/* Upcoming Status */}
             {statusCodeMeaning[orderDetails.status][1]}
           </p>
+          <h3
+            className={`font-semibold ${
+              orderDetails.paymentDone ? "text-green-500" : "text-yellow-500"
+            }`}
+          >
+            {orderDetails.paymentDone ? "$ Done" : "$ Pending"}
+          </h3>
         </div>
         <hr />
         <div className="listItem w-full my-5">

@@ -68,11 +68,6 @@ const Register = ({ login }) => {
         />
         <button
           className="btn max-w-md"
-          onClick={(e) => {
-            addToast("The backend hasn't been implemented yet... Sry", {
-              appearance: "warning",
-            });
-          }}
         >
           Sign Up
         </button>

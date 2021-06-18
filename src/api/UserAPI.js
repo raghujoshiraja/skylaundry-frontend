@@ -7,7 +7,7 @@ const UserAPI = (token) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isDriver, setIsDriver] = useState(false);
   const [userDetails, setUserDetails] = useState({});
-  const [driversList, setDriversList] = useState([]);
+  const [usersList, setUsersList] = useState();
   const { addToast } = useToasts();
 
   useEffect(() => {
@@ -45,22 +45,22 @@ const UserAPI = (token) => {
         }
       };
 
-      const getDrivers = async () => {
-        axios
-          .get(
-            "/users/drivers",
-            { headers: { Authorization: token } },
-            { withCredentials: true }
-          )
-          .then((res) => res && res.data && setDriversList(res.data))
-          .catch((err) => {
-            addToast("Error: ", err && err.response && err.response.data);
-            console.log(err);
-          });
-      };
-
+      (async () => {
+        // Get all users
+        isAdmin &&
+          axios
+            .get(
+              "/users/users",
+              { headers: { Authorization: token } },
+              { withCredentials: true }
+            )
+            .then((res) => res && res.data && setUsersList(res.data))
+            .catch((err) => {
+              addToast("Error: ", err && err.response && err.response.data);
+              console.log(err);
+            });
+      })();
       getUser();
-      isAdmin && getDrivers();
     }
   }, [token, addToast, isAdmin]);
 
@@ -80,16 +80,13 @@ const UserAPI = (token) => {
     }
   };
 
-  const addDriver = async () => {};
-
   return {
     isLoggedIn: [isLoggedIn, setIsLoggedIn],
     isAdmin: [isAdmin, setIsAdmin],
     isDriver: [isDriver, setIsDriver],
-    addDriver: addDriver,
     userDetails,
     getUserDetailsById,
-    driversList: [driversList, setDriversList],
+    usersList: [usersList, setUsersList],
   };
 };
 
