@@ -114,6 +114,83 @@ const OrderAPI = (token) => {
         return false;
       });
   };
+  const handleStatusChange = ({
+    orderId,
+    data,
+    status,
+    setIsModalOpen,
+    setActiveOrderId,
+  }) => {
+    axios
+      .put(`/orders/change_status/${orderId}/${status}`, data ? data : null, {
+        headers: { Authorization: token },
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res && res.data) {
+          addToast("Status changed Successfully", { appearance: "success" });
+
+          // Cleanup
+          setIsModalOpen(false);
+          setActiveOrderId("");
+          refreshOrders();
+        }
+      })
+      .catch((err) =>
+        addToast(
+          err && err.response && err.response.data && err.response.data.message,
+          { appearance: "error" }
+        )
+      );
+  };
+
+  const handleConfirmPayment = ({
+    id,
+    addDriverId,
+    setIsModalOpen,
+    setActiveOrderId,
+  }) => {
+    axios
+      .put(
+        `/orders/confirm_payment/${id}`,
+        { driverId: addDriverId },
+        { headers: { Authorization: token }, withCredentials: true }
+      )
+      .then((res) => {
+        if (res && res.data) {
+          addToast("Payment Done", { appearance: "success" });
+          setIsModalOpen(false);
+          setActiveOrderId("");
+          refreshOrders();
+        }
+      })
+      .catch((err) =>
+        addToast(
+          err && err.response && err.response.data && err.response.data.message,
+          { appearance: "error" }
+        )
+      );
+  };
+
+  const handleConfirmPayments = ({ userId }) => {
+    axios
+      .put(`/orders/confirm_payments/${userId}`, null, {
+        headers: { Authorization: token },
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res && res.data) {
+          addToast("All orders marked as Paid", { appearance: "success" });
+          refreshOrders();
+        }
+      })
+      .catch((err) =>
+        addToast(
+          err && err.response && err.response.data && err.response.data.message,
+          { appearance: "error" }
+        )
+      );
+  };
 
   const refreshOrders = () => setRefreshOrdersVar(!refreshOrdersVar);
 
@@ -123,6 +200,9 @@ const OrderAPI = (token) => {
     refreshOrders,
     fetchOrder,
     statusCodeMeaning,
+    handleStatusChange,
+    handleConfirmPayment,
+    handleConfirmPayments,
   };
 };
 
