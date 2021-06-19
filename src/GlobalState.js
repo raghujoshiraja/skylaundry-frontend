@@ -3,10 +3,12 @@ import axios from "./axios";
 import userAPI from "./api/UserAPI";
 import categoriesAPI from "./api/CategoriesAPI";
 import orderAPI from "./api/OrderAPI";
+import { useToasts } from "react-toast-notifications";
 
 export const GlobalState = createContext();
 
 export default function DataProvider({ children }) {
+  const { addToast } = useToasts();
   const [token, setToken] = useState(false);
   const [callback, setCallback] = useState(false);
 
@@ -15,17 +17,23 @@ export default function DataProvider({ children }) {
 
     if (previousLogin) {
       const refreshToken = async () => {
-        const res = await axios.get("/users/refresh_token", { withCredentials: true });
+        try {
+          const res = await axios.get("/users/refresh_token", {
+            withCredentials: true,
+          });
 
-        setToken(res.data.accessToken);
+          setToken(res.data.accessToken);
 
-        setTimeout(() => {
-          refreshToken();
-        }, 10 * 60 * 1000);
+          setTimeout(() => {
+            refreshToken();
+          }, 10 * 60 * 1000);
+        } catch (err) {
+          addToast("Unable to sign in due to browser issues. Try on firefox");
+        }
       };
       refreshToken();
     }
-  }, [callback]);
+  }, [callback, addToast]);
 
   const refresh = () => setCallback(!callback);
 
@@ -39,4 +47,3 @@ export default function DataProvider({ children }) {
 
   return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;
 }
-
