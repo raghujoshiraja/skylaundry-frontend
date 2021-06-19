@@ -15,9 +15,7 @@ export default function DataProvider({ children }) {
 
     if (previousLogin) {
       const refreshToken = async () => {
-        const res = await axios.get("/users/refresh_token", null, {
-          withCredentials: true,
-        });
+        const res = await axios.get("/users/refresh_token", { withCredentials: true });
 
         setToken(res.data.accessToken);
 
@@ -41,3 +39,4 @@ export default function DataProvider({ children }) {
 
   return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;
 }
+
