@@ -28,7 +28,7 @@ export default function DataProvider({ children }) {
             refreshToken();
           }, 10 * 60 * 1000);
         } catch (err) {
-          addToast("Unable to sign in due to browser issues. Try on firefox");
+          addToast("Unable to sign in due to browser issues. Try on firefox", { appearance: 'error'});
         }
       };
       refreshToken();
